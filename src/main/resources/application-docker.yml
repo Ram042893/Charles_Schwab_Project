@@ -1,0 +1,30 @@
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: ${APP_DATASOURCE_URL:jdbc:sybase:Tds:sybase:5000/master}
+    username: ${APP_DATASOURCE_USERNAME:sa}
+    password: ${APP_DATASOURCE_PASSWORD:myPassword}
+    driver-class-name: com.sybase.jdbc4.jdbc.SybDriver
+    hikari:
+      maximum-pool-size: 12
+      connection-timeout: 30000
+      initialization-fail-timeout: 300000
+      connection-test-query: SELECT 1
+  jpa:
+    database-platform: org.hibernate.dialect.SybaseASEDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        boot:
+          allow_jdbc_metadata_access: true
+  data:
+    redis:
+      host: ${APP_REDIS_HOST:redis}
+      port: ${APP_REDIS_PORT:6379}
+      repositories:
+        enabled: false
+  cache:
+    type: redis

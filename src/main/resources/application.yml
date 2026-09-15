@@ -1,0 +1,79 @@
+spring:
+  application:
+    name: agentic-url-shortener
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:shortener;MODE=MSSQLServer;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;DATABASE_TO_UPPER=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  data:
+    redis:
+      host: ${APP_REDIS_HOST:localhost}
+      port: ${APP_REDIS_PORT:6379}
+  cache:
+    type: simple
+
+server:
+  port: 8080
+  error:
+    include-message: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when_authorized
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:local-dev-only-change-me-to-a-64-character-secret-key}
+    issuer: agentic-url-shortener
+    access-token-ttl: 15m
+    refresh-token-ttl: 7d
+  shortener:
+    code-length: 7
+    cache-ttl: 10m
+    rate-limit-per-minute: 60
+    resolve-hosts: true
+  orchestration:
+    max-retries: 3
+    retry-backoff: 200ms
+    auto-approve-low-risk: false
+  security:
+    demo-users:
+      - username: engineer
+        password: Engineer@123
+        roles: ENGINEER
+      - username: reviewer
+        password: Reviewer@123
+        roles: REVIEWER
+      - username: admin
+        password: Admin@123
+        roles: ADMIN,REVIEWER,ENGINEER
+
+logging:
+  pattern:
+    level: "%5p [corr=%X{correlationId}] [wf=%X{workflowId}]"

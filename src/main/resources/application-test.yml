@@ -1,0 +1,32 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:shortener;MODE=MSSQLServer;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;DATABASE_TO_UPPER=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.data.redis.autoconfigure.RedisAutoConfiguration
+      - org.springframework.boot.data.redis.autoconfigure.RedisReactiveAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+  cache:
+    type: simple
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+app:
+  jwt:
+    secret: test-secret-key-must-be-at-least-thirty-two-chars
+    access-token-ttl: 30m
+  shortener:
+    resolve-hosts: false
