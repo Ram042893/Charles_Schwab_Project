@@ -17,8 +17,9 @@ Production-style URL shortener plus an **agentic SDLC orchestration layer**. The
 ## What is in the prototype
 
 1. **URL shortener APIs**: create, redirect, analytics, deactivate, optional custom alias / expiration / export (feature-flagged brownfield capabilities).
-2. **Agentic orchestrator**: explicit DAG, entry/exit gates, parallel stages with a join, human approval, bounded retries, rollback, safe-stop, replan, audit lineage, and reliability metrics.
+2. **Agentic orchestrator**: explicit DAG, entry/exit gates, parallel virtual-thread waves, human approval, bounded retries, validation repair, reduced-scope fallback, rollback, safe-stop, selective replan, reviewable unified diffs, audit lineage, and reliability metrics.
 3. **Three scenarios**: greenfield, brownfield, and ambiguous — each executable over HTTP.
+4. **CI**: GitHub Actions runs `./mvnw test`, packages the app, and builds the Docker image from a clean checkout.
 
 ## Quick start (tests, no Sybase required)
 

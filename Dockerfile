@@ -9,7 +9,9 @@ RUN sed -i 's/\r$//' mvnw && chmod +x mvnw && ./mvnw -B -DskipTests package
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 RUN apk add --no-cache curl \
-    && addgroup -S schwab && adduser -S schwab -G schwab
+    && addgroup -S schwab && adduser -S schwab -G schwab \
+    && mkdir -p /app/workbench \
+    && chown -R schwab:schwab /app
 COPY --from=build /workspace/target/agentic-url-shortener-1.0.0.jar app.jar
 USER schwab
 EXPOSE 8080

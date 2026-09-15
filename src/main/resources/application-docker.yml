@@ -28,3 +28,7 @@ spring:
         enabled: false
   cache:
     type: redis
+
+app:
+  orchestration:
+    workbench-dir: /tmp/workbench

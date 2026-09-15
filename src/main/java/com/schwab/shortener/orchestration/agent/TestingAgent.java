@@ -36,6 +36,11 @@ public class TestingAgent implements SpecialistAgent {
 
     @Override
     public AgentResult execute(WorkflowInstance workflow, StageNode stage, Map<String, String> context) {
+        String requirement = workflow.getRequirementText() == null ? "" : workflow.getRequirementText();
+        if (requirement.contains("[inject-test-fail]") && !"true".equals(context.get("repairApplied"))) {
+            return AgentResult.fail("Injected test failure: capability profile missing alias support");
+        }
+
         List<String> passed = new ArrayList<>();
         UrlShortenerService.UrlView created = urls.create("engineer", new UrlShortenerService.CreateUrlRequest("https://example.com/agentic", null, null));
         urls.resolveActive(created.code());
@@ -46,16 +51,21 @@ public class TestingAgent implements SpecialistAgent {
         } catch (BusinessException ex) {
             passed.add("ssrf-guard");
         }
-        if (workflow.getScenarioType() != ScenarioType.GREENFIELD) {
+        if (workflow.getScenarioType() != ScenarioType.GREENFIELD && !"true".equals(context.get("fallbackMode"))) {
             UrlShortenerService.UrlView aliased = urls.create("engineer", new UrlShortenerService.CreateUrlRequest(
                     "https://example.com/alias", "demo-alias-" + System.currentTimeMillis() % 100000, Instant.now().plus(2, ChronoUnit.DAYS)));
             urls.exportAnalytics("engineer", aliased.code());
             passed.add("brownfield-flags");
-        } else if (featureFlags.isEnabled(FeatureFlagService.CUSTOM_ALIAS)) {
+        } else if (featureFlags.isEnabled(FeatureFlagService.CUSTOM_ALIAS) && workflow.getScenarioType() == ScenarioType.GREENFIELD) {
             return AgentResult.fail("Greenfield must keep advanced flags disabled");
         }
-        String artifact = SimpleJson.object(Map.of("passed", passed));
+        if (context.get("changeSetHash") == null || context.get("changeSetHash").isBlank()) {
+            return AgentResult.fail("Missing reviewable change set hash from implementation");
+        }
+        passed.add("changeset-present");
+        String artifact = SimpleJson.object(Map.of("passed", passed, "changeSetHash", context.get("changeSetHash")));
         context.put("testResults", artifact);
-        return AgentResult.ok(artifact, "Executed in-process validation against the live shortener.");
+        context.put("artifactHash.TEST_EXECUTION", Integer.toHexString(artifact.hashCode()));
+        return AgentResult.ok(artifact, "Executed in-process validation against the live shortener and change set.");
     }
 }

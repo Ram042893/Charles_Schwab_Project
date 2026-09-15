@@ -62,6 +62,7 @@ app:
     max-retries: 3
     retry-backoff: 200ms
     auto-approve-low-risk: false
+    workbench-dir: workbench
   security:
     demo-users:
       - username: engineer

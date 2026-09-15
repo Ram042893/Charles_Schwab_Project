@@ -58,7 +58,11 @@ The ambiguity agent records open questions (`better`, `faster`, `enterprise read
 | Control | Behavior |
 | --- | --- |
 | Human gates | Reviewer/Admin only |
-| Replan | `POST /workflows/{id}/replan` resets downstream completed stages |
-| Safe-stop | `POST /workflows/{id}/safe-stop` |
+| Reviewable diff | `GET /workflows/{id}/changeset` returns unified diff + content hash |
+| Parallel waves | Ready stages run concurrently on virtual-thread executor |
+| Repair | Failed validation regenerates a corrected change set once |
+| Fallback | After retries, reduced-scope implementation runs before rollback |
+| Replan | `POST /workflows/{id}/replan` with optional `changedStageId` resets transitive dependents only |
+| Safe-stop | `POST /workflows/{id}/safe-stop` blocks later approvals |
 | Metrics | `GET /api/v1/orchestration/metrics` |
 | Lineage | `GET /api/v1/orchestration/workflows/{id}` |

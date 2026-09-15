@@ -66,7 +66,18 @@ public class OrchestrationController {
 
     @PostMapping("/workflows/{id}/replan")
     public Map<String, Object> replan(Authentication authentication, @PathVariable String id, @RequestBody(required = false) DecisionPayload payload) {
-        return started(engine.replan(id, authentication.getName(), payload == null ? "upstream changed" : payload.comment()));
+        return started(engine.replan(
+                id,
+                authentication.getName(),
+                payload == null ? "upstream changed" : payload.comment(),
+                payload == null ? null : payload.changedStageId()
+        ));
+    }
+
+    @GetMapping("/workflows/{id}/changeset")
+    @Operation(summary = "Fetch the latest reviewable unified diff for a workflow")
+    public Map<String, Object> changeSet(@PathVariable String id) {
+        return engine.latestChangeSet(id);
     }
 
     @PostMapping("/workflows/{id}/safe-stop")
@@ -95,5 +106,5 @@ public class OrchestrationController {
 
     public record RequirementPayload(@NotBlank String requirement) {}
 
-    public record DecisionPayload(String comment) {}
+    public record DecisionPayload(String comment, String changedStageId) {}
 }

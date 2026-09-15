@@ -32,10 +32,11 @@ The product is a URL shortener. The assignment differentiator is a **stateful ag
 `WorkflowEngine` loads an explicit DAG from `ScenarioCatalog`:
 
 - **Entry/exit gates** on each node (dependency completion in, artifact + status out).
-- **Parallel paths** (`IMPLEMENTATION` // `TEST_PLANNING`) then a **join** at `TEST_EXECUTION`.
+- **Parallel paths** (`IMPLEMENTATION` // `TEST_PLANNING`) executed concurrently on a virtual-thread executor, then a **join** at `TEST_EXECUTION`.
+- **Reviewable change sets**: implementation writes source/config under `workbench/{workflowId}` and stores a unified diff for reviewer inspection.
 - **Human approval** for change control, clarification, and release.
-- **Bounded retries** with backoff, then **rollback** of feature flags.
-- **Safe-stop** and **replan** (invalidate downstream, continue under governance).
+- **Bounded retries** with backoff, **validation-driven repair**, then **reduced-scope fallback**, then **rollback** of feature flags + workbench files.
+- **Safe-stop** and **selective replan** (reset changed upstream stage + transitive dependents).
 - **Decision lineage** (`decision_records`) and **audit events**.
 - **Metrics**: success rate, retries, rollbacks, e2e latency, MTTR.
 

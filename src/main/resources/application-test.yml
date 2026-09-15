@@ -30,3 +30,7 @@ app:
     access-token-ttl: 30m
   shortener:
     resolve-hosts: false
+  orchestration:
+    max-retries: 2
+    retry-backoff: 10ms
+    workbench-dir: target/workbench-test

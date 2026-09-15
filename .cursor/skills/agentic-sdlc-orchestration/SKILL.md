@@ -19,8 +19,10 @@ User asks to run scenarios, add a stage, change approval rules, inspect lineage,
 ## Invariants
 
 - High-impact actions stay behind approval gates.
-- Failures after `app.orchestration.max-retries` trigger feature-flag rollback.
-- Replan resets downstream completed stages from task decomposition onward.
+- Implementation generates a reviewable unified diff under `workbench/{workflowId}` and persists it as a change set.
+- Failures retry with backoff; testing failures attempt validation-driven repair; then a reduced-scope fallback runs before rollback.
+- Parallel-ready DAG waves execute on `orchestrationExecutor` (virtual threads).
+- Replan selectively resets the changed upstream stage and its transitive dependents (`changedStageId`).
 - Do not log secrets; `PolicyGuardrail` rejects password/token patterns in requirements.
 - Specialist agents stay behind `SpecialistAgent`; do not put orchestration logic in controllers.
 
