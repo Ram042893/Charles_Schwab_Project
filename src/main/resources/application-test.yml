@@ -34,3 +34,4 @@ app:
     max-retries: 2
     retry-backoff: 10ms
     workbench-dir: target/workbench-test
+    maven-validation-enabled: false

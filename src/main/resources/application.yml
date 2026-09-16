@@ -63,6 +63,9 @@ app:
     retry-backoff: 200ms
     auto-approve-low-risk: false
     workbench-dir: workbench
+    maven-validation-enabled: true
+    maven-validation-max-attempts: 3
+    maven-validation-timeout: 3m
   security:
     demo-users:
       - username: engineer

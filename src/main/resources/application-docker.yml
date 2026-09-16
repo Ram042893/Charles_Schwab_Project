@@ -32,3 +32,4 @@ spring:
 app:
   orchestration:
     workbench-dir: /tmp/workbench
+    maven-validation-enabled: false

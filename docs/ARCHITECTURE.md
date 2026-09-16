@@ -34,6 +34,7 @@ The product is a URL shortener. The assignment differentiator is a **stateful ag
 - **Entry/exit gates** on each node (dependency completion in, artifact + status out).
 - **Parallel paths** (`IMPLEMENTATION` // `TEST_PLANNING`) executed concurrently on a virtual-thread executor, then a **join** at `TEST_EXECUTION`.
 - **Reviewable change sets**: implementation writes source/config under `workbench/{workflowId}` and stores a unified diff for reviewer inspection.
+- **Isolated validation loop**: copies guard source into a sandbox, applies a real `UrlSafetyGuard.java` break, compiles and runs smoke checks in-process (fail), revises the patch from the failure output, then reruns until green — seconds, not a nested full Maven build.
 - **Human approval** for change control, clarification, and release.
 - **Bounded retries** with backoff, **validation-driven repair**, then **reduced-scope fallback**, then **rollback** of feature flags + workbench files.
 - **Safe-stop** and **selective replan** (reset changed upstream stage + transitive dependents).
